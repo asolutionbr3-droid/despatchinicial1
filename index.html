@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drive Dispatch</title>
+<style>
+  :root{
+    --asfalto:#1f2933; --faixa:#f5b800; --fundo:#eef0f2; --card:#ffffff;
+    --texto:#1f2933; --suave:#667085; --borda:#d5d9de; --zap:#1a9e55;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:var(--fundo);color:var(--texto);line-height:1.45}
+ 
+  header{background:var(--asfalto);color:#fff;padding:36px 20px 30px;position:relative}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
+    background:repeating-linear-gradient(90deg,var(--faixa) 0 36px,transparent 36px 60px)}
+  .wrap{max-width:1040px;margin:0 auto}
+  h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:-.02em;font-weight:800}
+  h1 span{color:var(--faixa)}
+  header p{color:#c3cad2;margin-top:6px;max-width:46ch}
+ 
+  .btn-dispatch{display:inline-block;margin-top:20px;background:var(--zap);color:#fff;text-decoration:none;
+    font-weight:800;font-size:1.05rem;padding:14px 22px;border-radius:10px}
+  .btn-dispatch:hover{filter:brightness(.92)}
+ 
+  nav{padding:18px 20px 6px}
+  .cats{display:flex;flex-wrap:wrap;gap:8px}
+  .cats button{border:1px solid var(--borda);background:var(--card);color:var(--texto);
+    padding:8px 14px;border-radius:999px;font-size:.9rem;cursor:pointer}
+  .cats button:hover{border-color:var(--asfalto)}
+  .cats button.ativo{background:var(--asfalto);color:#fff;border-color:var(--asfalto)}
+  .cats button:focus-visible,a:focus-visible{outline:3px solid var(--faixa);outline-offset:2px}
+ 
+  main{padding:14px 20px 50px}
+  .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--borda);border-left:6px solid var(--faixa);
+    border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
+  .card h3{font-size:1.1rem}
+  .cat{font-size:.85rem;font-weight:700;color:var(--asfalto);background:#fff3c4;
+    align-self:flex-start;padding:2px 10px;border-radius:6px}
+  .cidade{color:var(--suave);font-size:.95rem}
+  .zap{margin-top:10px;display:block;text-align:center;background:var(--zap);color:#fff;
+    text-decoration:none;font-weight:700;padding:10px;border-radius:8px}
+  .zap:hover{filter:brightness(.92)}
+  .vazio{padding:30px 0;color:var(--suave)}
+  .topo-links{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .seta{display:inline-flex;align-items:center;gap:10px;margin-top:20px;background:var(--faixa);color:var(--asfalto);
+    text-decoration:none;font-weight:800;padding:14px 20px;border-radius:10px}
+  .seta:hover{filter:brightness(.95)}
+  .seta svg{width:22px;height:22px}
+ 
+  .pag{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px;margin-top:26px}
+  .pag button{min-width:42px;height:42px;border:1px solid var(--borda);background:var(--card);border-radius:8px;
+    font-size:1rem;cursor:pointer;color:var(--texto)}
+  .pag button:hover:not(:disabled){border-color:var(--asfalto)}
+  .pag button.ativo{background:var(--asfalto);color:#fff;border-color:var(--asfalto)}
+  .pag button:disabled{opacity:.4;cursor:default}
+  .pag button:focus-visible{outline:3px solid var(--faixa);outline-offset:2px}
+ 
+  .parceiros{margin-top:44px;padding-top:26px;border-top:2px dashed var(--borda)}
+  .parceiros h2{font-size:1.3rem;margin-bottom:18px;text-align:center}
+  .roda{display:flex;flex-wrap:wrap;justify-content:center;gap:22px}
+  .parceiro{width:130px;height:130px;border-radius:50%;background:var(--card);border:3px solid var(--faixa);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    text-decoration:none;color:var(--texto);padding:12px;font-weight:700;font-size:.9rem;line-height:1.25}
+  .parceiro:hover{background:var(--asfalto);color:#fff}
+  .parceiro img{width:56px;height:56px;border-radius:50%;object-fit:cover;margin-bottom:6px}
+  .parceiro .ini{width:48px;height:48px;border-radius:50%;background:var(--asfalto);color:var(--faixa);
+    display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:6px}
+  .parceiro:focus-visible{outline:3px solid var(--faixa);outline-offset:3px}
+  footer{text-align:center;color:var(--suave);font-size:.85rem;padding-bottom:30px}
+</style>
+</head>
+<body>
+ 
+<header>
+  <div class="wrap">
+    <h1>Drive <span>Dispatch</span></h1>
+    <p>Encontre motoristas e prestadores de serviço e chame direto no WhatsApp.</p>
+    <div class="topo-links">
+      <a class="btn-dispatch" id="btnDispatch" href="#" target="_blank" rel="noopener">Chamar no WhatsApp Dispatch</a>
+      <a class="seta" id="proxima" href="#">  cidades 
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+ 
+<nav><div class="wrap"><div class="cats" id="cats"></div></div></nav>
+ 
+<main><div class="wrap">
+  <div class="grade" id="grade"></div>
+  <div class="pag" id="pag"></div>
+  <p class="vazio" id="vazio" hidden>Nenhum motorista encontrado. Tente outra categoria.</p>
+  <section class="parceiros">
+    <h2>Parceiros</h2>
+    <div class="roda" id="roda"></div>
+  </section>
+</div></main>
+ 
+<footer>Drive Dispatch</footer>
+ 
+<script>
+/* ============================================================
+   EDITE AQUI
+   1) CATEGORIAS: adicione ou remova nomes da lista.
+   2) MOTORISTAS: copie uma linha { ... }, cole abaixo e altere.
+      whatsapp = só números, com 55 + DDD + número (ex: 5575999990000)
+   ============================================================ */
+ 
+/* WhatsApp do Dispatch (botão do topo): só números, com 55 + DDD + número */
+const WHATSAPP_DISPATCH = "5511927108906";
+ 
+/* Link da seta "Próxima página" */
+const PROXIMA_PAGINA = "https://despacho1.vercel.app/";
+ 
+/* Quantos cards de motoristas por página */
+const ITENS_POR_PAGINA = 6;
+ 
+/* PARCEIROS: nome + link. "logo" é opcional (endereço de uma imagem); sem logo aparece a inicial. */
+const PARCEIROS = [
+  { nome:"Parceiro 1", link:"https://exemplo.com/1", logo:"" },
+  { nome:"Parceiro 2", link:"https://exemplo.com/2", logo:"" },
+  { nome:"Parceiro 3", link:"https://exemplo.com/3", logo:"" },
+  { nome:"Parceiro 4", link:"https://exemplo.com/4", logo:"" },
+  { nome:"Parceiro 5", link:"https://exemplo.com/5", logo:"" }
+];
+ 
+const CATEGORIAS = [
+  "Entregas","Corridas","Viagens pets","Eletricista","Guincho","Mecânica",
+  "Entregas de supermercados","Motorista escolar","Reparos","Lava jato","Outros"
+];
+ 
+const MOTORISTAS = [
+  { nome:"João Silva",     categoria:"Entregas",                  cidade:"Serrinha - BA",   whatsapp:"5575999990001" },
+  { nome:"Maria Souza",    categoria:"Corridas",                  cidade:"Serrinha - BA",   whatsapp:"5575999990002" },
+  { nome:"Carlos Pereira", categoria:"Viagens pets",              cidade:"Feira de Santana - BA", whatsapp:"5575999990003" },
+  { nome:"Antônio Lima",   categoria:"Eletricista",               cidade:"Serrinha - BA",   whatsapp:"5575999990004" },
+  { nome:"Pedro Alves",    categoria:"Guincho",                   cidade:"Serrinha - BA",   whatsapp:"5575999990005" },
+  { nome:"Rafael Costa",   categoria:"Mecânica",                  cidade:"Teofilândia - BA", whatsapp:"5575999990006" },
+  { nome:"Lucas Santos",   categoria:"Entregas de supermercados", cidade:"Serrinha - BA",   whatsapp:"5575999990007" },
+  { nome:"Ana Ribeiro",    categoria:"Motorista escolar",         cidade:"Serrinha - BA",   whatsapp:"5575999990008" },
+  { nome:"José Ferreira",  categoria:"Reparos",                   cidade:"Barrocas - BA",   whatsapp:"5575999990009" },
+  { nome:"Marcos Rocha",   categoria:"Lava jato",                 cidade:"Serrinha - BA",   whatsapp:"5575999990010" },
+  { nome:"Paulo Nunes",    categoria:"Outros",                    cidade:"Serrinha - BA",   whatsapp:"5575999990011" }
+];
+ 
+/* ======================= FIM DA ÁREA EDITÁVEL ======================= */
+ 
+let filtro = "Todos";
+let pagina = 1;
+const $cats = document.getElementById("cats");
+const $grade = document.getElementById("grade");
+const $vazio = document.getElementById("vazio");
+ 
+function esc(t){ const d=document.createElement("div"); d.textContent=t; return d.innerHTML; }
+ 
+function desenharCategorias(){
+  $cats.innerHTML = ["Todos",...CATEGORIAS].map(c =>
+    `<button class="${c===filtro?'ativo':''}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $cats.querySelectorAll("button").forEach(b => b.onclick = () => { filtro=b.dataset.c; pagina=1; desenharCategorias(); desenharCards(); });
+}
+ 
+function desenharCards(){
+  const lista = MOTORISTAS.filter(m => filtro==="Todos" || m.categoria===filtro);
+  const total = Math.max(1, Math.ceil(lista.length / ITENS_POR_PAGINA));
+  if (pagina > total) pagina = total;
+  const inicio = (pagina-1) * ITENS_POR_PAGINA;
+  $grade.innerHTML = lista.slice(inicio, inicio + ITENS_POR_PAGINA).map(m => `
+    <article class="card">
+      <h3>${esc(m.nome)}</h3>
+      <span class="cat">${esc(m.categoria)}</span>
+      <span class="cidade">${esc(m.cidade)}</span>
+      <a class="zap" href="https://wa.me/${m.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent('Olá '+m.nome+', vi seu contato no Drive Dispatch.')}" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+    </article>`).join("");
+  $vazio.hidden = lista.length > 0;
+  desenharPaginacao(total);
+}
+ 
+function desenharPaginacao(total){
+  const $pag = document.getElementById("pag");
+  if (total <= 1) { $pag.innerHTML = ""; return; }
+  let h = `<button data-p="${pagina-1}" ${pagina===1?'disabled':''} aria-label="Página anterior">←</button>`;
+  for (let i=1;i<=total;i++) h += `<button data-p="${i}" class="${i===pagina?'ativo':''}">${i}</button>`;
+  h += `<button data-p="${pagina+1}" ${pagina===total?'disabled':''} aria-label="Próxima página">→</button>`;
+  $pag.innerHTML = h;
+  $pag.querySelectorAll("button:not(:disabled)").forEach(b => b.onclick = () => {
+    pagina = +b.dataset.p; desenharCards(); window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+ 
+function desenharParceiros(){
+  document.getElementById("roda").innerHTML = PARCEIROS.map(p => `
+    <a class="parceiro" href="${esc(p.link)}" target="_blank" rel="noopener">
+      ${p.logo ? `<img src="${esc(p.logo)}" alt="">` : `<span class="ini">${esc(p.nome.charAt(0))}</span>`}
+      <span>${esc(p.nome)}</span>
+    </a>`).join("");
+}
+ 
+document.getElementById("btnDispatch").href =
+  "https://wa.me/" + WHATSAPP_DISPATCH.replace(/\D/g,"") + "?text=" + encodeURIComponent("Olá, preciso de ajuda com o Drive Dispatch.");
+document.getElementById("proxima").href = PROXIMA_PAGINA;
+desenharCategorias();
+desenharCards();
+desenharParceiros();
+</script>
+</body>
+</html>
+ 
